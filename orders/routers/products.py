@@ -20,11 +20,12 @@ def list_products(
     size: int = Query(20, ge=1),
     session: Session = Depends(get_session),
 ):
-    stmt = select(Product).where(Product.active.is_(True)).order_by(Product.name)
+    conditions = [Product.active.is_(True)]
     if category:
-        stmt = stmt.where(Product.category == category)
+        conditions.append(Product.category == category)
     if q:
-        stmt = select(Product).where(Product.name.ilike(f"%{q}%")).order_by(Product.name)
+        conditions.append(Product.name.ilike(f"%{q}%"))
+    stmt = select(Product).where(*conditions)
     return paginate(session, stmt, page, size, ProductOut)
 
 
