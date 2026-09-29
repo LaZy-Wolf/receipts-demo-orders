@@ -12,5 +12,5 @@ def paginate(session: Session, stmt: Select, page: int, size: int, schema: type[
         "total": total,
         "page": page,
         "size": size,
-        "pages": total // size,
+        "pages": -(-total // size),  # ceiling division
     }
