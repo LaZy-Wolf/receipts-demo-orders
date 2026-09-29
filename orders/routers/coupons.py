@@ -39,6 +39,6 @@ def validate_coupon(code: str, subtotal_cents: int = Query(ge=0), session: Sessi
         return {"valid": False, "reason": "coupon is not active"}
     if coupon.expires_at is not None and coupon.expires_at < utcnow():
         return {"valid": False, "reason": "coupon has expired"}
-    if subtotal_cents <= coupon.min_order_cents:
+    if subtotal_cents < coupon.min_order_cents:
         return {"valid": False, "reason": "order total below coupon minimum"}
     return {"valid": True, "discount_cents": coupon_discount(coupon, subtotal_cents)}
