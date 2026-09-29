@@ -22,6 +22,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def domain_error(request: Request, exc: DomainError):
         return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
 
+    @app.get("/health", tags=["ops"])
+    def health():
+        return {"status": "ok", "version": app.version}
+
     protected = [Depends(require_api_key)]
     for module in (products, customers, coupons, orders):
         app.include_router(module.router, dependencies=protected)
