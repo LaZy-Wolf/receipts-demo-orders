@@ -15,7 +15,7 @@ def create_customer(payload: CustomerIn, session: Session = Depends(get_session)
     existing = session.scalar(select(Customer).where(Customer.email == payload.email))
     if existing is not None:
         raise Conflict("email already registered")
-    customer = Customer(email=payload.email, name=payload.name)
+    customer = Customer(email=payload.email.lower(), name=payload.name)
     session.add(customer)
     session.commit()
     session.refresh(customer)
