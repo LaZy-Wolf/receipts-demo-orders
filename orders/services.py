@@ -74,6 +74,8 @@ def cancel_order(session: Session, order_id: int) -> Order:
     order = get_order(session, order_id)
     if order.status == "cancelled":
         raise Conflict(f"order {order_id} is already cancelled")
+    for item in order.items:
+        inventory.release(item.product, item.quantity)
     order.status = "cancelled"
     session.commit()
     session.refresh(order)
